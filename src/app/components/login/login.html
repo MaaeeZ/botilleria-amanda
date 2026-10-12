@@ -1,0 +1,26 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo">
+      🛒 <h1>Botilleria Amanda</h1>
+    </div>
+    <h2>Iniciar sesión</h2>
+    
+    <form (ngSubmit)="onLogin()">
+      <div class="form-group">
+        <label>Usuario</label>
+        <input type="text" [(ngModel)]="usuario" name="usuario" placeholder="Ingrese su usuario" required>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="contrasena" name="contrasena" placeholder="••••••••" required>
+      </div>
+
+      @if (errorMsj) {
+        <p class="error-msg">{{ errorMsj }}</p>
+      }
+
+      <button type="submit" class="btn-login">Iniciar sesión</button>
+    </form>
+  </div>
+</div>
