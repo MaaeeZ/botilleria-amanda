@@ -1,0 +1,100 @@
+.alerts-layout {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .btn-back {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #334155;
+      }
+
+      h2 { margin: 0; color: #1e293b; }
+    }
+  }
+
+  .alert-banner {
+    background-color: #fef3c7;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+
+    .icon { font-size: 1.5rem; }
+    p { margin: 0; }
+  }
+
+  .table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+
+      code {
+        background: #f1f5f9;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+      }
+
+      .stock-badge {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.85rem;
+      }
+
+      .btn-inventario {
+        background-color: #10b981;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+
+        &:hover { background-color: #059669; }
+      }
+
+      .empty-msg { text-align: center; color: #065f46; padding: 2.5rem; font-weight: bold; }
+    }
+  }
+}

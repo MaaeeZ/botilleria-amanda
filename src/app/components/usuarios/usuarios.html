@@ -1,0 +1,78 @@
+<div class="users-layout">
+  <!-- Cabecera -->
+  <header class="top-bar">
+    <div class="title-area">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver</button>
+      <h2>Gestión de Usuarios</h2>
+    </div>
+    <button class="btn-add" (click)="abrirModalCrear()">➕ Nuevo Usuario</button>
+  </header>
+
+  <!-- Tabla de Usuarios -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre de Usuario</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of usuarios; track u.id_usuario) {
+          <tr>
+            <td><code>#{{ u.id_usuario }}</code></td>
+            <td><strong>{{ u.nombre_usuario }}</strong></td>
+            <td>
+              <span class="badge" [class.admin]="u.rol === 'Administrador'">
+                {{ u.rol }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-delete" (click)="eliminar(u.id_usuario)">🗑️ Eliminar</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" class="empty-msg">No hay usuarios registrados.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Crear Usuario -->
+  @if (mostrarModal) {
+    <div class="modal-backdrop">
+      <div class="modal-card">
+        <h3>Crear Nuevo Usuario</h3>
+        
+        <form (submit)="guardarUsuario($event)">
+          <div class="form-group">
+            <label>Nombre de Usuario:</label>
+            <input type="text" [(ngModel)]="formUser.usuario" name="usuario" required placeholder="Ej: cajero1">
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" [(ngModel)]="formUser.contrasena" name="contrasena" required placeholder="******">
+          </div>
+
+          <div class="form-group">
+            <label>Rol asignado:</label>
+            <select [(ngModel)]="formUser.rol" name="rol">
+              <option value="Cajero">Cajero</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="btn-save">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

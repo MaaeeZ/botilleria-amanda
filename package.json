@@ -19,7 +19,7 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
-    "better-sqlite3": "^13.0.3",
+    "pg": "^8.23.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
@@ -27,6 +27,7 @@
     "@angular/build": "^22.2.2",
     "@angular/cli": "^22.2.2",
     "@angular/compiler-cli": "^22.2.0",
+    "@types/pg": "^8.23.1",
     "electron": "^44.7.0",
     "electron-builder": "^26.15.3",
     "jsdom": "^30.0.0",

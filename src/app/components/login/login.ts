@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ElectronService } from '../../services/electron';
 
 @Component({
@@ -15,12 +16,18 @@ export class LoginComponent {
   contrasena = '';
   errorMsj = '';
 
-  constructor(private electronService: ElectronService) {}
+  constructor(
+    private electronService: ElectronService,
+    private router: Router
+  ) {}
 
   async onLogin() {
     const res = await this.electronService.login(this.usuario, this.contrasena);
     if (res.success) {
-      alert(`Bienvenido, ${res.user.nombre} (${res.user.rol})`);
+      // Guardar el usuario activo
+      localStorage.setItem('usuario', JSON.stringify(res.user));
+      // Redirigir al Dashboard
+      this.router.navigate(['/dashboard']);
     } else {
       this.errorMsj = res.message;
     }

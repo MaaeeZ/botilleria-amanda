@@ -1,0 +1,104 @@
+<div class="history-layout">
+  <!-- Cabecera -->
+  <header class="top-bar">
+    <div class="title-area">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver</button>
+      <h2>Historial de Ventas</h2>
+    </div>
+  </header>
+
+  <!-- Buscador -->
+  <div class="search-section">
+    <input 
+      type="text" 
+      placeholder="🔍 Buscar por número de ticket o método de pago..." 
+      [(ngModel)]="busqueda"
+    >
+  </div>
+
+  <!-- Tabla de Ventas -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>N° Ticket</th>
+          <th>Fecha y Hora</th>
+          <th>Cajero</th>
+          <th>Método Pago</th>
+          <th>Total</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (venta of ventasFiltradas(); track venta.id_venta) {
+          <tr>
+            <td><code>{{ venta.numero_venta }}</code></td>
+            <td>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><strong>{{ venta.usuario || 'Sistema' }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="venta.metodo_pago.toLowerCase()">
+                {{ venta.metodo_pago }}
+              </span>
+            </td>
+            <td><strong>${{ venta.total | number }}</strong></td>
+            <td>
+              <button class="btn-detail" (click)="verDetalle(venta)">👁️ Ver Detalle</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-msg">No se registran ventas en el historial.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Detalle de Venta / Boleta -->
+  @if (mostrarModal) {
+    <div class="modal-backdrop">
+      <div class="modal-card">
+        <div class="ticket-header">
+          <h3>🍾 BOTILLERÍA AMANDA</h3>
+          <p>Comprobante de Venta</p>
+          <hr>
+          <div class="ticket-meta">
+            <p><strong>Ticket:</strong> {{ ventaSeleccionada?.numero_venta }}</p>
+            <p><strong>Fecha:</strong> {{ ventaSeleccionada?.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p><strong>Cajero:</strong> {{ ventaSeleccionada?.usuario }}</p>
+            <p><strong>Forma de Pago:</strong> {{ ventaSeleccionada?.metodo_pago }}</p>
+          </div>
+        </div>
+
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>Cant.</th>
+              <th>Producto</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of detalles; track item.nombre_producto) {
+              <tr>
+                <td>{{ item.cantidad }}x</td>
+                <td>{{ item.nombre_producto }}</td>
+                <td>${{ item.subtotal | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="ticket-total">
+          <span>TOTAL COMPRA:</span>
+          <strong>${{ ventaSeleccionada?.total | number }}</strong>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-print" (click)="imprimirVoucher()">🖨️ Imprimir / Guardar Ticket</button>
+          <button class="btn-close" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

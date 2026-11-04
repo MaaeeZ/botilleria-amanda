@@ -1,0 +1,136 @@
+<div class="main-layout">
+  <!-- Barra Lateral (Sidebar) -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="icon">🍾</span>
+      <div class="brand-text">
+        <h3>Botilleria</h3>
+        <span>Amanda</span>
+      </div>
+    </div>
+
+    <nav class="menu">
+      <a class="menu-item active" (click)="router.navigate(['/dashboard'])">
+        <span class="icon">🏠</span> Dashboard
+      </a>
+      <a class="menu-item" (click)="router.navigate(['/ventas'])">
+        <span class="icon">🛒</span> Ventas
+      </a>
+      <a class="menu-item" (click)="router.navigate(['/productos'])">
+        <span class="icon">📦</span> Inventario
+      </a>
+      <a class="menu-item" (click)="router.navigate(['/historial'])">
+        <span class="icon">📜</span> Historial de ventas
+      </a>
+
+      <!-- Solo visible si el usuario es Administrador -->
+      @if (usuarioActivo?.rol === 'Administrador') {
+        <a class="menu-item" (click)="router.navigate(['/usuarios'])">
+          <span class="icon">👥</span> Usuarios
+        </a>
+      }
+
+      <a class="menu-item" (click)="router.navigate(['/alertas'])">
+          <span class="icon">🔔</span> Alertas
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-logout" (click)="logout()">
+        <span class="icon">🚪</span> Salir
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido Principal -->
+  <main class="content-area">
+    <!-- Cabecera Superior -->
+    <header class="topbar">
+      <h2>Panel principal</h2>
+      <div class="user-info">
+        <span class="avatar">AD</span>
+        <span class="username">{{ usuarioActivo?.nombre || 'Administrador' }}</span>
+      </div>
+    </header>
+
+    <!-- Cuerpo del Dashboard -->
+    <div class="dashboard-body">
+      <h1 class="welcome-text">Buenos días, <span>{{ usuarioActivo?.nombre || 'Carlos' }}</span></h1>
+
+<!-- Tarjetas de Métricas -->
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-icon green">💲</div>
+          <div class="card-info">
+            <span class="title">Ventas del día</span>
+            <h3>${{ metricas.ventasHoy | number }}</h3>
+            <span class="subtitle green-text">Totales acumulados hoy</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon blue">📦</div>
+          <div class="card-info">
+            <span class="title">Productos disponibles</span>
+            <h3>{{ metricas.totalProductos | number }}</h3>
+            <span class="subtitle">En catálogo e inventario</span>
+          </div>
+        </div>
+
+        <div class="card" (click)="router.navigate(['/alertas'])" style="cursor: pointer;">
+          <div class="card-icon orange">🔔</div>
+          <div class="card-info">
+            <span class="title">Stock bajo</span>
+            <h3>{{ metricas.stockCritico }}</h3>
+            <span class="subtitle orange-text">Productos requeridos</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-icon purple">🛒</div>
+          <div class="card-info">
+            <span class="title">Total de ventas</span>
+            <h3>{{ metricas.transaccionesHoy }}</h3>
+            <span class="subtitle">Transacciones hoy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sección Ranking de Productos Más Vendidos -->
+      <div class="ranking-section">
+        <h3>🏆 Top 5 Productos Más Vendidos</h3>
+        <div class="ranking-table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Lugar</th>
+                <th>Producto</th>
+                <th>Unidades Vendidas</th>
+                <th>Total Recaudado</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (prod of topProductos; track prod.nombre_producto; let i = $index) {
+                <tr>
+                  <td>
+                    <span class="rank-badge" [class.gold]="i === 0" [class.silver]="i === 1" [class.bronze]="i === 2">
+                      #{{ i + 1 }}
+                    </span>
+                  </td>
+                  <td><strong>{{ prod.nombre_producto }}</strong></td>
+                  <td><strong>{{ prod.total_vendido }} u.</strong></td>
+                  <td>${{ prod.total_recaudado | number }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="empty-msg">No hay datos de ventas registrados para calcular el ranking.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+  </main>
+</div>

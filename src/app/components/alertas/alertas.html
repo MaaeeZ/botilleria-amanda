@@ -1,0 +1,46 @@
+<div class="alerts-layout">
+  <header class="top-bar">
+    <div class="title-area">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver</button>
+      <h2>Alertas de Inventario Crítico</h2>
+    </div>
+  </header>
+
+  <div class="alert-banner">
+    <span class="icon">⚠️</span>
+    <p>Los siguientes productos tienen un stock menor o igual al stock mínimo configurado. Se recomienda generar orden de compra a proveedores.</p>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Producto</th>
+          <th>Stock Actual</th>
+          <th>Stock Mínimo</th>
+          <th>Diferencia Requerida</th>
+          <th>Acción Sugerida</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (prod of alertas; track prod.id_producto) {
+          <tr>
+            <td><code>{{ prod.codigo_barra }}</code></td>
+            <td><strong>{{ prod.nombre_producto }}</strong></td>
+            <td><span class="stock-badge critical">{{ prod.stock_actual }} u.</span></td>
+            <td>{{ prod.stock_minimo }} u.</td>
+            <td><strong>+{{ prod.stock_minimo - prod.stock_actual + 10 }} u.</strong></td>
+            <td>
+              <button class="btn-inventario" (click)="irAInventario()">📦 Ir a Inventario</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-msg">✅ Todo en orden. No hay productos con stock crítico en este momento.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

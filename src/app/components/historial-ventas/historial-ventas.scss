@@ -1,0 +1,170 @@
+.history-layout {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .btn-back {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #334155;
+      }
+
+      h2 { margin: 0; color: #1e293b; }
+    }
+  }
+
+  .search-section input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+
+      code {
+        background: #f1f5f9;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .badge {
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+
+        &.efectivo { background-color: #d1fae5; color: #065f46; }
+        &.débito, &.debito { background-color: #dbeafe; color: #1e40af; }
+        &.crédito, &.credito { background-color: #fef3c7; color: #92400e; }
+      }
+
+      .btn-detail {
+        background-color: #064e3b;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+
+        &:hover { background-color: #04382a; }
+      }
+
+      .empty-msg { text-align: center; color: #94a3b8; padding: 2rem; }
+    }
+  }
+
+  // Modal Ticket
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+      .ticket-header {
+        text-align: center;
+        h3 { margin: 0; color: #064e3b; }
+        p { margin: 0.2rem 0 0.5rem; font-size: 0.85rem; color: #64748b; }
+        hr { border: 0; border-top: 1px dashed #cbd5e1; margin: 0.8rem 0; }
+
+        .ticket-meta {
+          text-align: left;
+          font-size: 0.85rem;
+          color: #334155;
+          p { margin: 0.2rem 0; }
+        }
+      }
+
+      .detail-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.85rem;
+
+        th, td { padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; }
+        th { text-align: left; color: #64748b; }
+      }
+
+      .ticket-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        color: #064e3b;
+        border-top: 2px dashed #cbd5e1;
+        padding-top: 0.8rem;
+        margin-top: 0.5rem;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1.5rem;
+
+        button {
+          flex: 1;
+          padding: 0.75rem;
+          border-radius: 6px;
+          border: none;
+          font-weight: bold;
+          cursor: pointer;
+
+          &.btn-print { background-color: #10b981; color: white; }
+          &.btn-close { background-color: #f1f5f9; color: #64748b; }
+        }
+      }
+    }
+  }
+}
