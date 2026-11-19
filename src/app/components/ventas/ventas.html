@@ -1,0 +1,94 @@
+<div class="pos-layout">
+  <!-- Columna Izquierda: Catálogo y Buscador -->
+  <div class="catalog-area">
+    <div class="top-nav">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver al Panel</button>
+      <h2>Punto de Venta</h2>
+    </div>
+
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="🔍 Buscar por nombre o escanear código de barras..." 
+        [(ngModel)]="busqueda"
+        (keyup.enter)="buscarOAgregarPorCodigo()"
+      >
+    </div>
+
+    <div class="products-grid">
+      @for (prod of productosFiltrados(); track prod.id_producto) {
+        <div class="product-card" (click)="agregarAlCarrito(prod)">
+          <div class="icon">
+            @if (prod.imagen_url && !prod.imagen_error) {
+              <img 
+                [src]="prod.imagen_url" 
+                alt="" 
+                (error)="prod.imagen_error = true" 
+                style="width: 45px; height: 45px; object-fit: cover; border-radius: 6px;"
+              >
+            } @else {
+              🍾
+            }
+          </div>
+          <h4>{{ prod.nombre_producto }}</h4>
+          <p class="price">${{ prod.precio_venta | number }}</p>
+          <span class="stock">Stock: {{ prod.stock_actual }}</span>
+        </div>
+      } @empty {
+        <div class="no-products">
+          <p>No se encontraron productos en la base de datos.</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Columna Derecha: Carrito y Resumen -->
+  <div class="cart-area">
+    <h3>Carrito de Venta</h3>
+
+    <div class="cart-list">
+      @for (item of carrito; track item.producto.id_producto) {
+        <div class="cart-item">
+          <div class="item-desc">
+            <strong>{{ item.producto.nombre_producto }}</strong>
+            <span>${{ item.producto.precio_venta | number }}</span>
+          </div>
+          <div class="item-qty">
+            <button (click)="cambiarCantidad(item, -1)">-</button>
+            <span>{{ item.cantidad }}</span>
+            <button (click)="cambiarCantidad(item, 1)">+</button>
+          </div>
+          <div class="item-subtotal">
+            ${{ item.subtotal | number }}
+          </div>
+          <button class="btn-del" (click)="eliminarDelCarrito(item)">🗑️</button>
+        </div>
+      } @empty {
+        <div class="empty-cart">
+          <p>🛒 Carrito vacío</p>
+        </div>
+      }
+    </div>
+
+    <div class="cart-footer">
+      <div class="total-row">
+        <span>Total:</span>
+        <strong>${{ calcularTotal() | number }}</strong>
+      </div>
+
+      <div class="methods">
+        <label>Método de Pago:</label>
+        <div class="btn-group">
+          <button [class.active]="metodoPago === 'Efectivo'" (click)="metodoPago = 'Efectivo'">💵 Efectivo</button>
+          <button [class.active]="metodoPago === 'Débito'" (click)="metodoPago = 'Débito'">💳 Débito</button>
+          <button [class.active]="metodoPago === 'Crédito'" (click)="metodoPago = 'Crédito'">💳 Crédito</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-cancel" (click)="limpiarCarrito()">Cancelar</button>
+        <button class="btn-pay" [disabled]="carrito.length === 0" (click)="finalizarVenta()">Cobrar</button>
+      </div>
+    </div>
+  </div>
+</div>

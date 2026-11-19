@@ -1,0 +1,174 @@
+<!-- Botón Burbuja Flotante (Esquina inferior derecha) -->
+<div class="chat-floating-trigger" (click)="toggleChat()" [class.active]="abierto" title="Asistente IA Botillería Amanda">
+  <div class="trigger-icon">
+    @if (abierto) {
+      <span>✕</span>
+    } @else {
+      <span>🤖</span>
+      <span class="status-dot" [class.online]="geminiStatus.configured"></span>
+    }
+  </div>
+  <span class="trigger-label">Asistente IA</span>
+</div>
+
+<!-- Ventana Flotante del Chat IA -->
+@if (abierto) {
+  <div class="chat-window">
+    
+    <!-- Cabecera de la Ventana -->
+    <div class="chat-header">
+      <div class="header-info">
+        <div class="bot-avatar">✨</div>
+        <div>
+          <h4>Asistente Botillería Amanda</h4>
+          <span class="status-text">
+            @if (geminiStatus.configured) {
+              <span class="indicator green">●</span> Gemini Flash conectado
+            } @else {
+              <span class="indicator red">●</span> Requiere API Key
+            }
+          </span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button 
+          class="btn-icon" 
+          [class.active]="modoConfiguracion" 
+          (click)="toggleConfiguracion()" 
+          title="Configuración de API Key"
+        >
+          ⚙️
+        </button>
+        <button class="btn-icon close" (click)="toggleChat()" title="Cerrar ventana">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <!-- Panel de Configuración de API Key (Modal / Vista Interna) -->
+    @if (modoConfiguracion) {
+      <div class="config-panel">
+        <div class="config-card">
+          <h5>🔑 Configurar Google Gemini API Key</h5>
+          <p class="config-desc">
+            Para consultar tu inventario y ventas con IA en tiempo real, ingresa tu clave gratuita de Google Gemini.
+          </p>
+
+          <a 
+            href="https://aistudio.google.com/app/apikey" 
+            target="_blank" 
+            class="link-ai-studio"
+          >
+            👉 Obtener API Key gratis en Google AI Studio (aistudio.google.com)
+          </a>
+
+          @if (geminiStatus.configured) {
+            <div class="status-box">
+              <span>Clave activa actual:</span>
+              <strong>{{ geminiStatus.maskedKey }}</strong>
+              <small>(Origen: {{ geminiStatus.source === 'database' ? 'Base de Datos' : 'Archivo .env' }})</small>
+            </div>
+          }
+
+          <div class="form-group">
+            <label>Nueva API Key de Gemini:</label>
+            <input 
+              type="password" 
+              placeholder="AIzaSy..." 
+              [(ngModel)]="inputApiKey"
+              (keyup.enter)="guardarApiKey()"
+            >
+          </div>
+
+          @if (mensajeKey) {
+            <div class="feedback-msg" [ngClass]="mensajeKey.tipo">
+              {{ mensajeKey.texto }}
+            </div>
+          }
+
+          <div class="config-actions">
+            <button class="btn-save-key" [disabled]="guardandoKey" (click)="guardarApiKey()">
+              @if (guardandoKey) {
+                <span>⏳ Conectando...</span>
+              } @else {
+                <span>💾 Guardar y Conectar</span>
+              }
+            </button>
+            <button class="btn-cancel-config" (click)="toggleConfiguracion()">
+              Volver al Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+
+      <!-- Banner de Alerta si falta la clave -->
+      @if (!geminiStatus.configured) {
+        <div class="warning-banner" (click)="modoConfiguracion = true">
+          <span>⚠️</span>
+          <p>No has configurado tu API Key gratuita de Gemini. Haz clic aquí para ingresarla.</p>
+        </div>
+      }
+
+      <!-- Contenedor del Historial de Conversación -->
+      <div class="chat-messages" #scrollContainer>
+        @for (msg of historial; track $index) {
+          <div class="message-row" [ngClass]="msg.emisor">
+            <div class="message-bubble" [class.error]="msg.error">
+              <div class="bubble-header">
+                <strong>{{ msg.emisor === 'ia' ? 'Botillería Amanda IA' : 'Tú' }}</strong>
+                <span class="time">{{ msg.fecha | date:'HH:mm' }}</span>
+              </div>
+              <div class="bubble-text" [innerHTML]="msg.texto"></div>
+
+              @if (msg.sql) {
+                <details class="sql-accordion">
+                  <summary>🔍 Ver consulta SQL ejecutada</summary>
+                  <code>{{ msg.sql }}</code>
+                </details>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Indicador de Carga Interactivo -->
+        @if (cargando) {
+          <div class="message-row ia">
+            <div class="message-bubble loading-bubble">
+              <div class="loading-content">
+                <span class="pulse-icon">⚡</span>
+                <span>Consultando inventario y ventas en PostgreSQL...</span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Botones de Preguntas Rápidas Sugeridas -->
+      <div class="quick-prompts">
+        @for (pregunta of preguntasRapidas; track pregunta) {
+          <button class="btn-chip" (click)="seleccionarPreguntaRapida(pregunta)" [disabled]="cargando">
+            {{ pregunta }}
+          </button>
+        }
+      </div>
+
+      <!-- Barra de Entrada de Pregunta -->
+      <div class="chat-input-bar">
+        <input 
+          type="text" 
+          placeholder="Pregúntale a la IA (ej: ¿cuánto vendimos hoy?)..." 
+          [(ngModel)]="inputPregunta" 
+          (keyup.enter)="enviarPregunta()"
+          [disabled]="cargando"
+        >
+        <button class="btn-send" (click)="enviarPregunta()" [disabled]="cargando || !inputPregunta.trim()" title="Enviar pregunta">
+          ➤
+        </button>
+      </div>
+
+    }
+
+  </div>
+}

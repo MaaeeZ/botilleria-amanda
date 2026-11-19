@@ -1,0 +1,640 @@
+.history-layout {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+
+    .title-area {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .btn-back {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #334155;
+        transition: all 0.2s;
+
+        &:hover {
+          background-color: #f1f5f9;
+        }
+      }
+
+      h2 { margin: 0; color: #1e293b; }
+    }
+
+    // Contenedor de acciones superiores
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+
+      // Botón Destacado de Cierre de Caja Diario
+      .btn-cierre {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #ffffff;
+        border: 1px solid #334155;
+        padding: 0.65rem 1.1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.88rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 12px rgba(15, 23, 42, 0.25);
+          background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
+
+        &.cerrado {
+          background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+          border-color: #10b981;
+          color: #ecfdf5;
+
+          &:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+          }
+        }
+      }
+
+      // Barra de Exportación y Reportes
+      .export-actions {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+
+        .btn-export {
+          border: none;
+          padding: 0.6rem 0.9rem;
+          border-radius: 6px;
+          font-weight: 600;
+          font-size: 0.85rem;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.35rem;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          transition: all 0.2s ease-in-out;
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          }
+
+          &.excel {
+            background-color: #107c41;
+            color: #ffffff;
+            &:hover { background-color: #0b5c30; }
+          }
+
+          &.pdf {
+            background-color: #dc2626;
+            color: #ffffff;
+            &:hover { background-color: #b91c1c; }
+          }
+
+          &.csv {
+            background-color: #0284c7;
+            color: #ffffff;
+            &:hover { background-color: #0369a1; }
+          }
+
+          &.preview {
+            background-color: #064e3b;
+            color: #ffffff;
+            &:hover { background-color: #04382a; }
+          }
+        }
+      }
+    }
+  }
+
+  .search-section input {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+    background: #ffffff;
+    transition: border 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #064e3b;
+    }
+  }
+
+  .table-container {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+      }
+
+      code {
+        background: #f1f5f9;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .badge {
+        padding: 0.25rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: bold;
+
+        &.efectivo { background-color: #d1fae5; color: #065f46; }
+        &.débito, &.debito { background-color: #dbeafe; color: #1e40af; }
+        &.crédito, &.credito { background-color: #fef3c7; color: #92400e; }
+      }
+
+      .btn-detail {
+        background-color: #064e3b;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+
+        &:hover { background-color: #04382a; }
+      }
+
+      .empty-msg { text-align: center; color: #94a3b8; padding: 2rem; }
+    }
+  }
+
+  // Modales Base
+  .modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 1rem;
+
+    .modal-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-sizing: border-box;
+
+      // Modal de Ticket individual
+      &.ticket-modal {
+        width: 100%;
+        max-width: 420px;
+
+        .ticket-header {
+          text-align: center;
+          h3 { margin: 0; color: #064e3b; font-size: 1.4rem; }
+          p { margin: 0.2rem 0 0.5rem; font-size: 0.85rem; color: #64748b; }
+          hr { border: 0; border-top: 1px dashed #cbd5e1; margin: 0.8rem 0; }
+
+          .ticket-meta {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #334155;
+            p { margin: 0.2rem 0; }
+          }
+        }
+
+        .detail-table {
+          width: 100%;
+          border-collapse: collapse;
+          margin: 1rem 0;
+          font-size: 0.85rem;
+
+          th, td { padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; }
+          th { text-align: left; color: #64748b; }
+        }
+
+        .ticket-total {
+          display: flex;
+          justify-content: space-between;
+          font-size: 1.2rem;
+          color: #064e3b;
+          border-top: 2px dashed #cbd5e1;
+          padding-top: 0.8rem;
+          margin-top: 0.5rem;
+        }
+      }
+
+      // Modal de Vista Previa / Resumen Consolidado
+      &.report-preview-modal {
+        width: 100%;
+        max-width: 780px;
+
+        .preview-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 1rem;
+
+          .header-brand {
+            h2 { margin: 0; color: #064e3b; font-size: 1.5rem; }
+            .subtitle { margin: 0.3rem 0 0; color: #64748b; font-size: 0.95rem; }
+          }
+
+          .header-meta {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #475569;
+            p { margin: 0.2rem 0; }
+          }
+        }
+
+        .divider {
+          border: 0;
+          border-top: 2px solid #e2e8f0;
+          margin: 1.2rem 0;
+        }
+
+        .summary-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 1rem;
+          margin-bottom: 1.5rem;
+
+          .summary-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+
+            .card-label {
+              font-size: 0.8rem;
+              color: #64748b;
+              text-transform: uppercase;
+              font-weight: 600;
+            }
+
+            h3 {
+              margin: 0.4rem 0 0;
+              color: #1e293b;
+              font-size: 1.4rem;
+            }
+
+            &.total {
+              background-color: #ecfdf5;
+              border-color: #a7f3d0;
+              h3 { color: #064e3b; }
+            }
+          }
+        }
+
+        .payment-breakdown {
+          background-color: #f1f5f9;
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
+
+          h4 { margin: 0 0 0.8rem; font-size: 0.95rem; color: #334155; }
+
+          .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.8rem;
+
+            .breakdown-item {
+              background: #ffffff;
+              padding: 0.7rem 0.9rem;
+              border-radius: 6px;
+              border: 1px solid #cbd5e1;
+              display: flex;
+              flex-direction: column;
+              gap: 0.2rem;
+
+              .method-name { font-size: 0.85rem; color: #64748b; }
+              strong { font-size: 1.05rem; color: #064e3b; }
+              small { font-size: 0.75rem; color: #94a3b8; }
+            }
+          }
+        }
+
+        .preview-table-container {
+          h4 { margin: 0 0 0.6rem; font-size: 0.95rem; color: #334155; }
+          max-height: 280px;
+          overflow-y: auto;
+          border: 1px solid #e2e8f0;
+          border-radius: 6px;
+
+          .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+
+            th, td {
+              padding: 0.6rem 0.8rem;
+              border-bottom: 1px solid #f1f5f9;
+            }
+
+            th {
+              background: #f8fafc;
+              position: sticky;
+              top: 0;
+              color: #475569;
+              font-size: 0.8rem;
+              text-transform: uppercase;
+            }
+          }
+        }
+      }
+
+      // Modal de Cierre de Caja Diario por Correo
+      &.cierre-modal {
+        width: 100%;
+        max-width: 600px;
+
+        .cierre-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+
+          .icon-wrap {
+            font-size: 2.2rem;
+            background-color: #f1f5f9;
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+          }
+
+          h3 { margin: 0; color: #0f172a; font-size: 1.35rem; }
+          .subtitle { margin: 0.25rem 0 0; color: #64748b; font-size: 0.88rem; }
+        }
+
+        .divider {
+          border: 0;
+          border-top: 1px solid #e2e8f0;
+          margin: 1.2rem 0;
+        }
+
+        .cierre-kpis {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.8rem;
+          margin-bottom: 1.2rem;
+
+          .kpi-item {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.8rem 0.6rem;
+            text-align: center;
+
+            .label {
+              display: block;
+              font-size: 0.75rem;
+              color: #64748b;
+              text-transform: uppercase;
+              font-weight: 600;
+              margin-bottom: 0.3rem;
+            }
+
+            strong {
+              font-size: 1.2rem;
+              color: #1e293b;
+            }
+
+            &.total {
+              background-color: #ecfdf5;
+              border-color: #a7f3d0;
+              strong { color: #064e3b; }
+            }
+          }
+        }
+
+        .methods-summary {
+          background-color: #f8fafc;
+          border: 1px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 0.9rem;
+          margin-bottom: 1.2rem;
+
+          h5 { margin: 0 0 0.6rem; font-size: 0.85rem; color: #475569; }
+
+          .methods-list {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+
+            .method-pill {
+              background: #ffffff;
+              border: 1px solid #cbd5e1;
+              border-radius: 6px;
+              padding: 0.4rem 0.7rem;
+              font-size: 0.82rem;
+              display: flex;
+              gap: 0.35rem;
+              align-items: center;
+
+              strong { color: #064e3b; }
+              small { color: #94a3b8; }
+            }
+          }
+        }
+
+        .email-config-box {
+          background-color: #f1f5f9;
+          border-radius: 8px;
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.8rem;
+          margin-bottom: 1.2rem;
+
+          .config-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+
+            .cfg-icon { font-size: 1.2rem; }
+            .cfg-label { display: block; font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 600; }
+            .cfg-value { font-size: 0.92rem; color: #1e293b; }
+
+            .status-badge {
+              display: inline-block;
+              font-size: 0.82rem;
+              font-weight: bold;
+              padding: 0.2rem 0.6rem;
+              border-radius: 20px;
+              margin-top: 0.2rem;
+
+              &.closed { background-color: #d1fae5; color: #065f46; }
+              &.pending { background-color: #fef3c7; color: #92400e; }
+            }
+          }
+        }
+
+        .feedback-alert {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          padding: 0.9rem 1rem;
+          border-radius: 8px;
+          margin-bottom: 1.2rem;
+          font-size: 0.9rem;
+
+          &.exito {
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+          }
+
+          &.error {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+          }
+
+          .msg-text { flex: 1; }
+        }
+
+        .btn-confirm-cierre {
+          background-color: #064e3b !important;
+          color: white !important;
+          border: none;
+          padding: 0.8rem 1.2rem;
+          border-radius: 6px;
+          font-weight: bold;
+          font-size: 0.95rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: background-color 0.2s;
+
+          &:hover:not(:disabled) {
+            background-color: #04382a !important;
+          }
+
+          &:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+
+        button {
+          flex: 1;
+          padding: 0.75rem;
+          border-radius: 6px;
+          border: none;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.2s;
+
+          &.btn-print {
+            background-color: #064e3b;
+            color: white;
+            &:hover { background-color: #04382a; }
+          }
+
+          &.btn-close {
+            background-color: #f1f5f9;
+            color: #475569;
+            &:hover { background-color: #e2e8f0; }
+          }
+        }
+      }
+    }
+  }
+}
+
+// =========================================================================
+// REGLAS CSS PARA IMPRESIÓN (@media print)
+// =========================================================================
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .no-print,
+  .top-bar,
+  .search-section,
+  .table-container {
+    display: none !important;
+  }
+
+  .history-layout {
+    padding: 0 !important;
+    background: transparent !important;
+  }
+
+  .modal-backdrop {
+    position: static !important;
+    background: none !important;
+    display: block !important;
+    padding: 0 !important;
+  }
+
+  .modal-card {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .preview-table-container {
+    max-height: none !important;
+    overflow: visible !important;
+    border: none !important;
+  }
+}

@@ -1,0 +1,229 @@
+.main-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8fafc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+// Sidebar Estilos
+.sidebar {
+  width: 260px;
+  background-color: #064e3b; // Verde oscuro acorde al mockup
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2rem;
+    padding-left: 0.5rem;
+
+    .icon { font-size: 2rem; }
+    h3 { margin: 0; font-size: 1.1rem; line-height: 1.1; }
+    span { font-size: 0.9rem; opacity: 0.8; }
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.75rem 1rem;
+      color: #d1fae5;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover, &.active {
+        background-color: #10b981;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .sidebar-footer {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: none;
+      color: #fca5a5;
+      padding: 0.75rem;
+      cursor: pointer;
+      font-size: 0.95rem;
+      border-radius: 6px;
+
+      &:hover {
+        background-color: rgba(239, 68, 68, 0.1);
+      }
+    }
+  }
+}
+
+.ranking-section {
+  margin-top: 2rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+
+  h3 {
+    margin-top: 0;
+    color: #0f172a;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .ranking-table-container {
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        padding: 0.85rem;
+        text-align: left;
+        border-bottom: 1px solid #f1f5f9;
+      }
+
+      th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      .rank-badge {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.8rem;
+        background-color: #e2e8f0;
+        color: #334155;
+
+        &.gold { background-color: #fef08a; color: #854d0e; }
+        &.silver { background-color: #e2e8f0; color: #475569; }
+        &.bronze { background-color: #ffedd5; color: #9a3412; }
+      }
+
+      .empty-msg {
+        text-align: center;
+        color: #94a3b8;
+        padding: 2rem;
+      }
+    }
+  }
+}
+
+// Área Principal Estilos
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .topbar {
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+
+    h2 { margin: 0; font-size: 1.25rem; color: #1e293b; }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        background-color: #064e3b;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.85rem;
+      }
+
+      .username { font-weight: 600; color: #334155; }
+    }
+  }
+
+  .dashboard-body {
+    padding: 2rem;
+
+    .welcome-text {
+      font-size: 1.75rem;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+
+      span { color: #10b981; }
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+
+      .card {
+        background: #ffffff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #f1f5f9;
+
+        .card-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+
+          &.green { background-color: #d1fae5; }
+          &.blue { background-color: #dbeafe; }
+          &.orange { background-color: #ffedd5; }
+          &.purple { background-color: #f3e8ff; }
+        }
+
+        .card-info {
+          display: flex;
+          flex-direction: column;
+
+          .title { font-size: 0.85rem; color: #64748b; }
+          h3 { margin: 0.2rem 0; font-size: 1.4rem; color: #0f172a; }
+          .subtitle { font-size: 0.75rem; color: #94a3b8; }
+          .green-text { color: #10b981; font-weight: 600; }
+          .orange-text { color: #f97316; font-weight: 600; }
+        }
+      }
+    }
+  }
+}

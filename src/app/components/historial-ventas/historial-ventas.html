@@ -1,0 +1,354 @@
+<div class="history-layout">
+  <!-- Cabecera -->
+  <header class="top-bar">
+    <div class="title-area">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver</button>
+      <h2>Historial de Ventas</h2>
+    </div>
+
+    <!-- Botonera Superior: Reportes + Cierre de Caja -->
+    <div class="top-actions">
+      <!-- Botón Destacado: Cierre de Caja Diario -->
+      <button 
+        class="btn-cierre" 
+        [class.cerrado]="cierreHoy?.yaCerrado" 
+        (click)="abrirModalCierreCaja()" 
+        title="Cuadratura y envío de cierre de caja por correo electrónico"
+      >
+        @if (cierreHoy?.yaCerrado) {
+          <span>✅ Caja Cerrada Hoy</span>
+        } @else {
+          <span>🔒 Cierre de Caja Diario</span>
+        }
+      </button>
+
+      <!-- Barra de Herramientas de Reportes (4 Opciones) -->
+      <div class="export-actions">
+        <button class="btn-export excel" (click)="exportarExcel()" title="Exportar reporte en formato Excel (.xlsx)">
+          📊 Excel
+        </button>
+        <button class="btn-export pdf" (click)="exportarPDF()" title="Generar documento formal en PDF">
+          📄 PDF
+        </button>
+        <button class="btn-export csv" (click)="exportarCSV()" title="Exportar archivo plano CSV contable">
+          📑 CSV
+        </button>
+        <button class="btn-export preview" (click)="abrirVistaPreviaResumen()" title="Ver resumen general e imprimir">
+          🖨️ Resumen
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Buscador -->
+  <div class="search-section">
+    <input 
+      type="text" 
+      placeholder="🔍 Buscar por número de ticket, cajero o método de pago..." 
+      [(ngModel)]="busqueda"
+    >
+  </div>
+
+  <!-- Tabla de Ventas -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>N° Ticket</th>
+          <th>Fecha y Hora</th>
+          <th>Cajero</th>
+          <th>Método Pago</th>
+          <th>Total</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (venta of ventasFiltradas(); track venta.id_venta) {
+          <tr>
+            <td><code>{{ venta.numero_venta }}</code></td>
+            <td>{{ venta.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td><strong>{{ venta.usuario || 'Sistema' }}</strong></td>
+            <td>
+              <span class="badge" [ngClass]="venta.metodo_pago.toLowerCase()">
+                {{ venta.metodo_pago }}
+              </span>
+            </td>
+            <td><strong>${{ venta.total | number }}</strong></td>
+            <td>
+              <button class="btn-detail" (click)="verDetalle(venta)">👁️ Ver Detalle</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-msg">No se registran ventas en el historial.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal 1: Detalle de Venta Individual / Boleta -->
+  @if (mostrarModal) {
+    <div class="modal-backdrop">
+      <div class="modal-card ticket-modal">
+        <div class="ticket-header">
+          <h3>🍾 BOTILLERÍA AMANDA</h3>
+          <p>Comprobante de Venta</p>
+          <hr>
+          <div class="ticket-meta">
+            <p><strong>Ticket:</strong> {{ ventaSeleccionada?.numero_venta }}</p>
+            <p><strong>Fecha:</strong> {{ ventaSeleccionada?.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p><strong>Cajero:</strong> {{ ventaSeleccionada?.usuario }}</p>
+            <p><strong>Forma de Pago:</strong> {{ ventaSeleccionada?.metodo_pago }}</p>
+          </div>
+        </div>
+
+        <table class="detail-table">
+          <thead>
+            <tr>
+              <th>Cant.</th>
+              <th>Producto</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of detalles; track item.nombre_producto) {
+              <tr>
+                <td>{{ item.cantidad }}x</td>
+                <td>{{ item.nombre_producto }}</td>
+                <td>${{ item.subtotal | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <div class="ticket-total">
+          <span>TOTAL COMPRA:</span>
+          <strong>${{ ventaSeleccionada?.total | number }}</strong>
+        </div>
+
+        <div class="modal-actions no-print">
+          <button class="btn-print" (click)="imprimirVoucher()">🖨️ Imprimir Ticket</button>
+          <button class="btn-close" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal 2: Vista Previa Imprimible / Resumen en Pantalla -->
+  @if (mostrarModalResumen && resumenVentas) {
+    <div class="modal-backdrop">
+      <div class="modal-card report-preview-modal printable-area">
+        
+        <!-- Encabezado Formal del Negocio -->
+        <div class="preview-header">
+          <div class="header-brand">
+            <h2>🍾 BOTILLERÍA AMANDA</h2>
+            <p class="subtitle">Reporte Consolidado de Ventas y Movimientos</p>
+          </div>
+          <div class="header-meta">
+            <p><strong>Emisión:</strong> {{ fechaReporte }}</p>
+            <p><strong>Transacciones:</strong> {{ resumenVentas.totalTransacciones }}</p>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Métricas Clave del Resumen -->
+        <div class="summary-cards">
+          <div class="summary-card total">
+            <span class="card-label">Total Recaudado</span>
+            <h3>${{ resumenVentas.montoTotal | number }}</h3>
+          </div>
+          <div class="summary-card">
+            <span class="card-label">Transacciones</span>
+            <h3>{{ resumenVentas.totalTransacciones }}</h3>
+          </div>
+          <div class="summary-card">
+            <span class="card-label">Ticket Promedio</span>
+            <h3>${{ resumenVentas.ticketPromedio | number }}</h3>
+          </div>
+        </div>
+
+        <!-- Desglose por Método de Pago -->
+        <div class="payment-breakdown">
+          <h4>Desglose por Forma de Pago:</h4>
+          <div class="breakdown-grid">
+            <div class="breakdown-item">
+              <span class="method-name">💵 Efectivo:</span>
+              <strong>${{ resumenVentas.porMetodo['Efectivo']?.total || 0 | number }}</strong>
+              <small>({{ resumenVentas.porMetodo['Efectivo']?.cantidad || 0 }} transacciones)</small>
+            </div>
+            <div class="breakdown-item">
+              <span class="method-name">💳 Débito:</span>
+              <strong>${{ resumenVentas.porMetodo['Débito']?.total || 0 | number }}</strong>
+              <small>({{ resumenVentas.porMetodo['Débito']?.cantidad || 0 }} transacciones)</small>
+            </div>
+            <div class="breakdown-item">
+              <span class="method-name">💳 Crédito:</span>
+              <strong>${{ resumenVentas.porMetodo['Crédito']?.total || 0 | number }}</strong>
+              <small>({{ resumenVentas.porMetodo['Crédito']?.cantidad || 0 }} transacciones)</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla Resumida de Transacciones -->
+        <div class="preview-table-container">
+          <h4>Detalle de Transacciones ({{ ventasFiltradas().length }} registros):</h4>
+          <table class="preview-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Fecha</th>
+                <th>Cajero</th>
+                <th>Método</th>
+                <th style="text-align: right;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (v of ventasFiltradas(); track v.id_venta) {
+                <tr>
+                  <td><code>{{ v.numero_venta }}</code></td>
+                  <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td>{{ v.usuario || 'Sistema' }}</td>
+                  <td>{{ v.metodo_pago }}</td>
+                  <td style="text-align: right;"><strong>${{ v.total | number }}</strong></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Botones de Acción (Ocultos al Imprimir) -->
+        <div class="modal-actions no-print">
+          <button class="btn-print" (click)="imprimirResumen()">🖨️ Imprimir / Guardar PDF</button>
+          <button class="btn-close" (click)="cerrarModalResumen()">Cerrar</button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Modal 3: Cierre de Caja Diario por Correo -->
+  @if (mostrarModalCierre) {
+    <div class="modal-backdrop">
+      <div class="modal-card cierre-modal">
+        
+        <div class="cierre-header">
+          <div class="icon-wrap">🔒</div>
+          <div>
+            <h3>Cierre de Caja Diario</h3>
+            <p class="subtitle">Cuadratura y envío automático por correo electrónico</p>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <!-- Métricas del Día -->
+        @if (cierreHoy?.resumen; as r) {
+          <div class="cierre-kpis">
+            <div class="kpi-item total">
+              <span class="label">Ventas de Hoy</span>
+              <strong>${{ r.totalVentas | number }}</strong>
+            </div>
+            <div class="kpi-item">
+              <span class="label">Transacciones</span>
+              <strong>{{ r.cantidadTransacciones }}</strong>
+            </div>
+            <div class="kpi-item">
+              <span class="label">Ticket Promedio</span>
+              <strong>${{ r.ticketPromedio | number }}</strong>
+            </div>
+          </div>
+
+          <!-- Desglose por método de pago -->
+          @if (r.desgloseMetodos && r.desgloseMetodos.length > 0) {
+            <div class="methods-summary">
+              <h5>Desglose por Método de Pago:</h5>
+              <div class="methods-list">
+                @for (m of r.desgloseMetodos; track m.metodo_pago) {
+                  <div class="method-pill">
+                    <span>{{ m.metodo_pago }}:</span>
+                    <strong>${{ m.total | number }}</strong>
+                    <small>({{ m.cantidad }})</small>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        <!-- Información de Configuración de Envío -->
+        <div class="email-config-box">
+          <div class="config-row">
+            <span class="cfg-icon">📧</span>
+            <div>
+              <span class="cfg-label">Correo Destinatario:</span>
+              <strong class="cfg-value">{{ cierreHoy?.destinatario || 'Configurado en .env' }}</strong>
+            </div>
+          </div>
+          <div class="config-row">
+            <span class="cfg-icon">⏰</span>
+            <div>
+              <span class="cfg-label">Cierre Automático:</span>
+              <span class="cfg-value">{{ cierreHoy?.horaAuto || '23:00' }} hrs (al estar la app abierta)</span>
+            </div>
+          </div>
+          <div class="config-row">
+            <span class="cfg-icon">📋</span>
+            <div>
+              <span class="cfg-label">Estado de Cierre Hoy:</span>
+              @if (cierreHoy?.yaCerrado) {
+                <span class="status-badge closed">
+                  ✅ Enviado hoy a las {{ cierreHoy?.cierre?.fecha_envio | date:'HH:mm' }}
+                </span>
+              } @else {
+                <span class="status-badge pending">
+                  ⏳ Pendiente de cierre
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensajes de Notificación Visual -->
+        @if (mensajeCierre) {
+          <div class="feedback-alert" [ngClass]="mensajeCierre.tipo">
+            @if (mensajeCierre.tipo === 'exito') {
+              <span>✅</span>
+            } @else {
+              <span>⚠️</span>
+            }
+            <div class="msg-text">{{ mensajeCierre.texto }}</div>
+          </div>
+        }
+
+        <!-- Acciones del Modal -->
+        <div class="modal-actions">
+          <button 
+            type="button" 
+            class="btn-close" 
+            [disabled]="cierreEnProceso" 
+            (click)="cerrarModalCierre()"
+          >
+            Volver
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn-confirm-cierre" 
+            [disabled]="cierreEnProceso" 
+            (click)="confirmarCierreCaja()"
+          >
+            @if (cierreEnProceso) {
+              <span class="spinner">⏳</span> Enviando cierre y reporte...
+            } @else {
+              <span>📧 Cerrar Caja y Enviar por Correo</span>
+            }
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+</div>

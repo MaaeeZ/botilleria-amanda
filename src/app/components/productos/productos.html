@@ -1,0 +1,146 @@
+<div class="inventory-layout">
+  <!-- Cabecera -->
+  <header class="top-bar">
+    <div class="title-area">
+      <button class="btn-back" (click)="volverAlDashboard()">⬅️ Volver</button>
+      <h2>Gestión de Inventario y Productos</h2>
+    </div>
+    
+    <!-- Solo el Administrador puede agregar nuevos productos -->
+    @if (esAdmin) {
+      <button class="btn-add" (click)="abrirModalCrear()">➕ Nuevo Producto</button>
+    }
+  </header>
+
+  <!-- Buscador y Filtro -->
+  <div class="search-section">
+    <input 
+      type="text" 
+      placeholder="🔍 Buscar por nombre o código de barras..." 
+      [(ngModel)]="busqueda"
+    >
+  </div>
+
+  <!-- Tabla de Productos -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Imagen</th>
+          <th>Código</th>
+          <th>Nombre del Producto</th>
+          <th>P. Compra</th>
+          <th>P. Venta</th>
+          <th>Stock Actual</th>
+          <th>Estado</th>
+          @if (esAdmin) {
+            <th>Acciones</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (prod of productosFiltrados(); track prod.id_producto) {
+          <tr>
+            <td>
+              @if (prod.imagen_url && !prod.imagen_error) {
+                <img 
+                  [src]="prod.imagen_url" 
+                  alt="" 
+                  (error)="prod.imagen_error = true" 
+                  style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                >
+              } @else {
+                <span>🍾</span>
+              }
+            </td>
+            <td><code>{{ prod.codigo_barra }}</code></td>
+            <td><strong>{{ prod.nombre_producto }}</strong></td>
+            <td>${{ prod.precio_compra | number }}</td>
+            <td>${{ prod.precio_venta | number }}</td>
+            <td><strong>{{ prod.stock_actual }}</strong></td>
+            <td>
+              <span class="badge" [class.critical]="prod.stock_actual <= prod.stock_minimo">
+                {{ prod.stock_actual <= prod.stock_minimo ? '⚠️ Stock Bajo' : '✅ Normal' }}
+              </span>
+            </td>
+            @if (esAdmin) {
+              <td>
+                <button class="btn-action edit" (click)="abrirModalEditar(prod)">✏️</button>
+                <button class="btn-action delete" (click)="eliminar(prod.id_producto)">🗑️</button>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="esAdmin ? 8 : 7" class="empty-msg">No hay productos registrados.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Formulario (Crear/Editar) -->
+  @if (mostrarModal && esAdmin) {
+    <div class="modal-backdrop">
+      <div class="modal-card">
+        <h3>{{ editando ? 'Editar Producto' : 'Crear Nuevo Producto' }}</h3>
+        
+        <form (submit)="guardarProducto($event)">
+          <div class="form-group">
+            <label>Código de Barras:</label>
+            <input type="text" [(ngModel)]="formProducto.codigo_barra" name="codigo" required placeholder="Ej: 780123456789">
+          </div>
+
+          <div class="form-group">
+            <label>Nombre del Producto:</label>
+            <input type="text" [(ngModel)]="formProducto.nombre_producto" name="nombre" required placeholder="Ej: Cerveza Heineken 330ml">
+          </div>
+
+          <!-- Selección de imagen desde el equipo -->
+          <div class="form-group">
+            <label>Imagen del Producto (desde PC):</label>
+            <input type="file" (change)="alSeleccionarImagen($event)" accept="image/*">
+            
+            @if (formProducto.imagen_url) {
+              <div style="margin-top: 0.5rem; text-align: center;">
+                <img [src]="formProducto.imagen_url" alt="Vista previa" style="max-height: 80px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                <button type="button" (click)="formProducto.imagen_url = ''" style="display: block; margin: 0.3rem auto; background: #fee2e2; color: #ef4444; border: none; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; font-weight: bold;">
+                  ❌ Quitar imagen
+                </button>
+              </div>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Precio Compra ($):</label>
+              <input type="number" [(ngModel)]="formProducto.precio_compra" name="compra" required min="0">
+            </div>
+
+            <div class="form-group">
+              <label>Precio Venta ($):</label>
+              <input type="number" [(ngModel)]="formProducto.precio_venta" name="venta" required min="0">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Stock Actual:</label>
+              <input type="number" [(ngModel)]="formProducto.stock_actual" name="stock" required min="0">
+            </div>
+
+            <div class="form-group">
+              <label>Stock Mínimo (Alerta):</label>
+              <input type="number" [(ngModel)]="formProducto.stock_minimo" name="minimo" required min="1">
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+            <button type="submit" class="btn-save">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
